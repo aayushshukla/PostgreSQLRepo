@@ -1,0 +1,667 @@
+Server [localhost]:
+Database [postgres]: northwind
+Port [5432]:
+Username [postgres]:
+Password for user postgres:
+
+psql (17.4)
+WARNING: Console code page (437) differs from Windows code page (1252)
+         8-bit characters might not work correctly. See psql reference
+         page "Notes for Windows users" for details.
+Type "help" for help.
+
+northwind=# \dt
+                  List of relations
+ Schema |          Name           | Type  |  Owner
+--------+-------------------------+-------+----------
+ public | categories              | table | postgres
+ public | customer_customer_demo  | table | postgres
+ public | customer_demographics   | table | postgres
+ public | customers               | table | postgres
+ public | deletedemployeesarchive | table | postgres
+ public | employee_territories    | table | postgres
+ public | employees               | table | postgres
+ public | employeetitlechanges    | table | postgres
+ public | order_details           | table | postgres
+ public | orders                  | table | postgres
+ public | products                | table | postgres
+ public | region                  | table | postgres
+ public | shippers                | table | postgres
+ public | suppliers               | table | postgres
+ public | tb_random               | table | postgres
+ public | territories             | table | postgres
+ public | us_states               | table | postgres
+(17 rows)
+
+
+northwind=#
+northwind=# \d orders
+                           Table "public.orders"
+      Column      |          Type          | Collation | Nullable | Default
+------------------+------------------------+-----------+----------+---------
+ order_id         | smallint               |           | not null |
+ customer_id      | bpchar                 |           |          |
+ employee_id      | smallint               |           |          |
+ order_date       | date                   |           |          |
+ required_date    | date                   |           |          |
+ shipped_date     | date                   |           |          |
+ ship_via         | smallint               |           |          |
+ freight          | real                   |           |          |
+ ship_name        | character varying(40)  |           |          |
+ ship_address     | character varying(60)  |           |          |
+ ship_city        | character varying(15)  |           |          |
+ ship_region      | character varying(15)  |           |          |
+ ship_postal_code | character varying(10)  |           |          |
+ ship_country     | character varying(15)  |           |          |
+ productname      | character varying(255) |           |          |
+Indexes:
+    "pk_orders" PRIMARY KEY, btree (order_id)
+    "idx_orders_ship_country" btree (ship_country)
+    "idx_p_orders_ship_country_usa" btree (ship_country) WHERE ship_country::text = 'USA'::text
+    "idx_u_orders_order_id_customer_id" UNIQUE, btree (order_id, customer_id)
+Foreign-key constraints:
+    "fk_orders_customers" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    "fk_orders_employees" FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    "fk_orders_shippers" FOREIGN KEY (ship_via) REFERENCES shippers(shipper_id)
+Referenced by:
+    TABLE "order_details" CONSTRAINT "fk_order_details_orders" FOREIGN KEY (order_id) REFERENCES orders(order_id)
+
+
+northwind=# \d+ orders
+                                                      Table "public.orders"
+      Column      |          Type          | Collation | Nullable | Default | Storage  | Compression | Stats target | Description
+------------------+------------------------+-----------+----------+---------+----------+-------------+--------------+-------------
+ order_id         | smallint               |           | not null |         | plain    |             |              |
+ customer_id      | bpchar                 |           |          |         | extended |             |              |
+ employee_id      | smallint               |           |          |         | plain    |             |              |
+ order_date       | date                   |           |          |         | plain    |             |              |
+ required_date    | date                   |           |          |         | plain    |             |              |
+ shipped_date     | date                   |           |          |         | plain    |             |              |
+ ship_via         | smallint               |           |          |         | plain    |             |              |
+ freight          | real                   |           |          |         | plain    |             |              |
+ ship_name        | character varying(40)  |           |          |         | extended |             |              |
+ ship_address     | character varying(60)  |           |          |         | extended |             |              |
+ ship_city        | character varying(15)  |           |          |         | extended |             |              |
+ ship_region      | character varying(15)  |           |          |         | extended |             |              |
+ ship_postal_code | character varying(10)  |           |          |         | extended |             |              |
+ ship_country     | character varying(15)  |           |          |         | extended |             |              |
+ productname      | character varying(255) |           |          |         | extended |             |              |
+Indexes:
+    "pk_orders" PRIMARY KEY, btree (order_id)
+    "idx_orders_ship_country" btree (ship_country)
+    "idx_p_orders_ship_country_usa" btree (ship_country) WHERE ship_country::text = 'USA'::text
+    "idx_u_orders_order_id_customer_id" UNIQUE, btree (order_id, customer_id)
+Foreign-key constraints:
+    "fk_orders_customers" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    "fk_orders_employees" FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    "fk_orders_shippers" FOREIGN KEY (ship_via) REFERENCES shippers(shipper_id)
+Referenced by:
+    TABLE "order_details" CONSTRAINT "fk_order_details_orders" FOREIGN KEY (order_id) REFERENCES orders(order_id)
+Access method: heap
+
+
+northwind=# \du
+                             List of roles
+ Role name |                         Attributes
+-----------+------------------------------------------------------------
+ Aayush    | Create DB
+ pappu     |
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS
+
+
+northwind=# \du Aayush
+     List of roles
+ Role name | Attributes
+-----------+------------
+
+
+northwind=# \df
+                                                                                List of functions
+ Schema |              Name               |                  Result data type                  |                            Argument data types                            | Type
+--------+---------------------------------+----------------------------------------------------+---------------------------------------------------------------------------+------
+ public | fn_add1_func                    | integer                                            | integer, integer                                                          | func
+ public | fn_add_func                     | integer                                            | integer, integer                                                          | func
+ public | fn_cal_total_bill               | real                                               | no_of_item integer, price integer, gst integer, OUT total_bill real       | func
+ public | fn_cal_total_bill1              | record                                             | no_of_item integer, price integer, INOUT gst integer, OUT total_bill real | func
+ public | fn_cal_total_bill2              | record                                             | no_of_item integer, price integer, INOUT gst integer, OUT total_bill real | func
+ public | fn_cal_total_bill4              | record                                             | no_of_item integer, price integer, INOUT gst integer, OUT total_bill real | func
+ public | fn_div_exception                | real                                               | real, real                                                                | func
+ public | fn_employees_update_city        | void                                               |                                                                           | func
+ public | fn_get_order_details_avg_price  | real                                               |                                                                           | func
+ public | fn_get_order_size               | text                                               | real, real                                                                | func
+ public | fn_get_orders_details_max_price | real                                               |                                                                           | func
+ public | fn_latest_order                 | orders                                             |                                                                           | func
+ public | fn_latest_order1                | SETOF orders                                       |                                                                           | func
+ public | fn_order_details_max_price      | integer                                            |                                                                           | func
+ public | fn_order_details_max_price      | integer                                            | oid integer                                                               | func
+ public | fn_order_ship_via               | text                                               | shipvia smallint                                                          | func
+ public | fn_orders_details_max_price     | real                                               |                                                                           | func
+ public | fn_orders_ship_by_names         | TABLE(oid smallint, cid character, empid smallint) | pattern character varying                                                 | func
+ public | fn_unit_price_gt                | order_details                                      |                                                                           | func
+ public | fn_unit_price_gt1               | SETOF order_details                                |                                                                           | func
+ public | trg_archive_employee            | trigger                                            |                                                                           | func
+ public | trg_check_hire_date             | trigger                                            |                                                                           | func
+ public | trg_insert_active_employee      | trigger                                            |                                                                           | func
+ public | trg_log_title_change            | trigger                                            |                                                                           | func
+(24 rows)
+
+
+northwind=#
+northwind=#
+northwind=# \dv
+                 List of relations
+ Schema |          Name          | Type |  Owner
+--------+------------------------+------+----------
+ public | activeemployees        | view | postgres
+ public | vw_order_employee_view | view | postgres
+ public | vw_order_myview        | view | postgres
+ public | vw_order_myview_all    | view | postgres
+ public | vw_order_orderview     | view | postgres
+(5 rows)
+
+
+northwind=# \c hrdb
+You are now connected to database "hrdb" as user "postgres".
+hrdb=# \c northwind
+You are now connected to database "northwind" as user "postgres".
+northwind=# \l
+                                                List of databases
+   Name    |  Owner   | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |   Access privileges
+-----------+----------+----------+-----------------+---------+-------+--------+-----------+-----------------------
+ hrdb      | postgres | UTF8     | libc            | en-US   | en-US |        |           |
+ northwind | postgres | UTF8     | libc            | en-US   | en-US |        |           |
+ postgres  | postgres | UTF8     | libc            | en-US   | en-US |        |           |
+ template0 | postgres | UTF8     | libc            | en-US   | en-US |        |           | =c/postgres          +
+           |          |          |                 |         |       |        |           | postgres=CTc/postgres
+ template1 | postgres | UTF8     | libc            | en-US   | en-US |        |           | =c/postgres          +
+           |          |          |                 |         |       |        |           | postgres=CTc/postgres
+ zomato    | postgres | UTF8     | libc            | en-US   | en-US |        |           |
+(6 rows)
+
+
+northwind=# \dn
+      List of schemas
+  Name  |       Owner
+--------+-------------------
+ public | pg_database_owner
+(1 row)
+
+
+northwind=# \dS+  s- sytem defined
+Did not find any relation named "s-".
+northwind=# \dS+
+                                                          List of relations
+   Schema   |              Name               |       Type        |  Owner   | Persistence | Access method |    Size    | Description
+------------+---------------------------------+-------------------+----------+-------------+---------------+------------+-------------
+ pg_catalog | pg_aggregate                    | table             | postgres | permanent   | heap          | 56 kB      |
+ pg_catalog | pg_am                           | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_amop                         | table             | postgres | permanent   | heap          | 88 kB      |
+ pg_catalog | pg_amproc                       | table             | postgres | permanent   | heap          | 72 kB      |
+ pg_catalog | pg_attrdef                      | table             | postgres | permanent   | heap          | 16 kB      |
+ pg_catalog | pg_attribute                    | table             | postgres | permanent   | heap          | 536 kB     |
+ pg_catalog | pg_auth_members                 | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_authid                       | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_available_extension_versions | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_available_extensions         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_backend_memory_contexts      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_cast                         | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_class                        | table             | postgres | permanent   | heap          | 144 kB     |
+ pg_catalog | pg_collation                    | table             | postgres | permanent   | heap          | 384 kB     |
+ pg_catalog | pg_config                       | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_constraint                   | table             | postgres | permanent   | heap          | 72 kB      |
+ pg_catalog | pg_conversion                   | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_cursors                      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_database                     | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_db_role_setting              | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_default_acl                  | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_depend                       | table             | postgres | permanent   | heap          | 160 kB     |
+ pg_catalog | pg_description                  | table             | postgres | permanent   | heap          | 400 kB     |
+ pg_catalog | pg_enum                         | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_event_trigger                | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_extension                    | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_file_settings                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_foreign_data_wrapper         | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_foreign_server               | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_foreign_table                | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_group                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_hba_file_rules               | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_ident_file_mappings          | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_index                        | table             | postgres | permanent   | heap          | 72 kB      |
+ pg_catalog | pg_indexes                      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_inherits                     | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_init_privs                   | table             | postgres | permanent   | heap          | 64 kB      |
+ pg_catalog | pg_language                     | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_largeobject                  | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_largeobject_metadata         | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_locks                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_matviews                     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_namespace                    | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_opclass                      | table             | postgres | permanent   | heap          | 56 kB      |
+ pg_catalog | pg_operator                     | table             | postgres | permanent   | heap          | 144 kB     |
+ pg_catalog | pg_opfamily                     | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_parameter_acl                | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_partitioned_table            | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_policies                     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_policy                       | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_prepared_statements          | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_prepared_xacts               | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_proc                         | table             | postgres | permanent   | heap          | 880 kB     |
+ pg_catalog | pg_publication                  | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_publication_namespace        | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_publication_rel              | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_publication_tables           | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_range                        | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_replication_origin           | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_replication_origin_status    | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_replication_slots            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_rewrite                      | table             | postgres | permanent   | heap          | 720 kB     |
+ pg_catalog | pg_roles                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_rules                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_seclabel                     | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_seclabels                    | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_sequence                     | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_sequences                    | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_settings                     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_shadow                       | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_shdepend                     | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_shdescription                | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_shmem_allocations            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_shseclabel                   | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_stat_activity                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_all_indexes             | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_all_tables              | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_archiver                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_bgwriter                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_checkpointer            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_database                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_database_conflicts      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_gssapi                  | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_io                      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_analyze        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_basebackup     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_cluster        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_copy           | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_create_index   | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_progress_vacuum         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_recovery_prefetch       | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_replication             | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_replication_slots       | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_slru                    | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_ssl                     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_subscription            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_subscription_stats      | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_sys_indexes             | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_sys_tables              | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_user_functions          | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_user_indexes            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_user_tables             | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_wal                     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_wal_receiver            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_xact_all_tables         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_xact_sys_tables         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_xact_user_functions     | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stat_xact_user_tables        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_all_indexes           | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_all_sequences         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_all_tables            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_sys_indexes           | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_sys_sequences         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_sys_tables            | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_user_indexes          | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_user_sequences        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statio_user_tables           | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_statistic                    | table             | postgres | permanent   | heap          | 336 kB     |
+ pg_catalog | pg_statistic_ext                | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_statistic_ext_data           | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_stats                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stats_ext                    | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_stats_ext_exprs              | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_subscription                 | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_subscription_rel             | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_tables                       | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_tablespace                   | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_timezone_abbrevs             | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_timezone_names               | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_transform                    | table             | postgres | permanent   | heap          | 0 bytes    |
+ pg_catalog | pg_trigger                      | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_ts_config                    | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_ts_config_map                | table             | postgres | permanent   | heap          | 56 kB      |
+ pg_catalog | pg_ts_dict                      | table             | postgres | permanent   | heap          | 48 kB      |
+ pg_catalog | pg_ts_parser                    | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_ts_template                  | table             | postgres | permanent   | heap          | 40 kB      |
+ pg_catalog | pg_type                         | table             | postgres | permanent   | heap          | 168 kB     |
+ pg_catalog | pg_user                         | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_user_mapping                 | table             | postgres | permanent   | heap          | 8192 bytes |
+ pg_catalog | pg_user_mappings                | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_views                        | view              | postgres | permanent   |               | 0 bytes    |
+ pg_catalog | pg_wait_events                  | view              | postgres | permanent   |               | 0 bytes    |
+ public     | activeemployees                 | view              | postgres | permanent   |               | 0 bytes    |
+ public     | categories                      | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | customer_customer_demo          | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | customer_demographics           | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | customers                       | table             | postgres | permanent   | heap          | 48 kB      |
+ public     | deletedemployeesarchive         | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | employee_territories            | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | employees                       | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | employeetitlechanges            | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | employeetitlechanges_log_id_seq | sequence          | postgres | permanent   |               | 8192 bytes |
+ public     | mv_random_view                  | materialized view | postgres | permanent   | heap          | 24 kB      |
+ public     | order_details                   | table             | postgres | permanent   | heap          | 128 kB     |
+ public     | orders                          | table             | postgres | permanent   | heap          | 144 kB     |
+ public     | products                        | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | region                          | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | shippers                        | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | suppliers                       | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | tb_random                       | table             | postgres | permanent   | heap          | 85 MB      |
+ public     | territories                     | table             | postgres | permanent   | heap          | 16 kB      |
+ public     | us_states                       | table             | postgres | permanent   | heap          | 8192 bytes |
+ public     | vw_order_employee_view          | view              | postgres | permanent   |               | 0 bytes    |
+ public     | vw_order_myview                 | view              | postgres | permanent   |               | 0 bytes    |
+ public     | vw_order_myview_all             | view              | postgres | permanent   |               | 0 bytes    |
+ public     | vw_order_orderview              | view              | postgres | permanent   |               | 0 bytes    |
+(166 rows)
+
+
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=# \password
+Enter new password for user "postgres":
+Enter it again:
+NOTICE:  empty string is not a valid password, clearing password
+northwind=# \H
+Output format is html.
+northwind=# \dn
+<table border="1">
+  <caption>List of schemas</caption>
+  <tr>
+    <th align="center">Name</th>
+    <th align="center">Owner</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">public</td>
+    <td align="left">pg_database_owner</td>
+  </tr>
+</table>
+<p>(1 row)<br />
+</p>
+
+northwind=# \e
+northwind=# \s
+history is not supported by this installation
+
+northwind=# \g
+<table border="1">
+  <tr>
+    <th align="center">employee_id</th>
+    <th align="center">last_name</th>
+    <th align="center">first_name</th>
+    <th align="center">title</th>
+    <th align="center">title_of_courtesy</th>
+    <th align="center">birth_date</th>
+    <th align="center">hire_date</th>
+    <th align="center">address</th>
+    <th align="center">city</th>
+    <th align="center">region</th>
+    <th align="center">postal_code</th>
+    <th align="center">country</th>
+    <th align="center">home_phone</th>
+    <th align="center">extension</th>
+    <th align="center">photo</th>
+    <th align="center">notes</th>
+    <th align="center">reports_to</th>
+    <th align="center">photo_path</th>
+  </tr>
+  <tr valign="top">
+    <td align="right">1</td>
+    <td align="left">Davolio</td>
+    <td align="left">Nancy</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Ms.</td>
+    <td align="left">1948-12-08</td>
+    <td align="left">1992-05-01</td>
+    <td align="left">507 - 20th Ave. E.\nApt. 2A</td>
+    <td align="left">Seattle</td>
+    <td align="left">WA</td>
+    <td align="left">98122</td>
+    <td align="left">USA</td>
+    <td align="left">(206) 555-9857</td>
+    <td align="left">5467</td>
+    <td align="left">\x</td>
+    <td align="left">Education includes a BA in psychology from Colorado State University in 1970.  She also completed The Art of the Cold Call.  Nancy is a member of Toastmasters International.</td>
+    <td align="right">2</td>
+    <td align="left">http://accweb/emmployees/davolio.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">2</td>
+    <td align="left">Fuller</td>
+    <td align="left">Andrew</td>
+    <td align="left">Vice President, Sales</td>
+    <td align="left">Dr.</td>
+    <td align="left">1952-02-19</td>
+    <td align="left">1992-08-14</td>
+    <td align="left">908 W. Capital Way</td>
+    <td align="left">Tacoma</td>
+    <td align="left">WA</td>
+    <td align="left">98401</td>
+    <td align="left">USA</td>
+    <td align="left">(206) 555-9482</td>
+    <td align="left">3457</td>
+    <td align="left">\x</td>
+    <td align="left">Andrew received his BTS commercial in 1974 and a Ph.D. in international marketing from the University of Dallas in 1981.  He is fluent in French and Italian and reads German.  He joined the company as a sales representative, was promoted to sales manager in January 1992 and to vice president of sales in March 1993.  Andrew is a member of the Sales Management Roundtable, the Seattle Chamber of Commerce, and the Pacific Rim Importers Association.</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">http://accweb/emmployees/fuller.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">3</td>
+    <td align="left">Leverling</td>
+    <td align="left">Janet</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Ms.</td>
+    <td align="left">1963-08-30</td>
+    <td align="left">1992-04-01</td>
+    <td align="left">722 Moss Bay Blvd.</td>
+    <td align="left">Kirkland</td>
+    <td align="left">WA</td>
+    <td align="left">98033</td>
+    <td align="left">USA</td>
+    <td align="left">(206) 555-3412</td>
+    <td align="left">3355</td>
+    <td align="left">\x</td>
+    <td align="left">Janet has a BS degree in chemistry from Boston College (1984).  She has also completed a certificate program in food retailing management.  Janet was hired as a sales associate in 1991 and promoted to sales representative in February 1992.</td>
+    <td align="right">2</td>
+    <td align="left">http://accweb/emmployees/leverling.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">4</td>
+    <td align="left">Peacock</td>
+    <td align="left">Margaret</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Mrs.</td>
+    <td align="left">1937-09-19</td>
+    <td align="left">1993-05-03</td>
+    <td align="left">4110 Old Redmond Rd.</td>
+    <td align="left">Redmond</td>
+    <td align="left">WA</td>
+    <td align="left">98052</td>
+    <td align="left">USA</td>
+    <td align="left">(206) 555-8122</td>
+    <td align="left">5176</td>
+    <td align="left">\x</td>
+    <td align="left">Margaret holds a BA in English literature from Concordia College (1958) and an MA from the American Institute of Culinary Arts (1966).  She was assigned to the London office temporarily from July through November 1992.</td>
+    <td align="right">2</td>
+    <td align="left">http://accweb/emmployees/peacock.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">5</td>
+    <td align="left">Buchanan</td>
+    <td align="left">Steven</td>
+    <td align="left">Sales Manager</td>
+    <td align="left">Mr.</td>
+    <td align="left">1955-03-04</td>
+    <td align="left">1993-10-17</td>
+    <td align="left">14 Garrett Hill</td>
+    <td align="left">London</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">SW1 8JR</td>
+    <td align="left">UK</td>
+    <td align="left">(71) 555-4848</td>
+    <td align="left">3453</td>
+    <td align="left">\x</td>
+    <td align="left">Steven Buchanan graduated from St. Andrews University, Scotland, with a BSC degree in 1976.  Upon joining the company as a sales representative in 1992, he spent 6 months in an orientation program at the Seattle office and then returned to his permanent post in London.  He was promoted to sales manager in March 1993.  Mr. Buchanan has completed the courses Successful Telemarketing and International Sales Management.  He is fluent in French.</td>
+    <td align="right">2</td>
+    <td align="left">http://accweb/emmployees/buchanan.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">6</td>
+    <td align="left">Suyama</td>
+    <td align="left">Michael</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Mr.</td>
+    <td align="left">1963-07-02</td>
+    <td align="left">1993-10-17</td>
+    <td align="left">Coventry House\nMiner Rd.</td>
+    <td align="left">London</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">EC2 7JR</td>
+    <td align="left">UK</td>
+    <td align="left">(71) 555-7773</td>
+    <td align="left">428</td>
+    <td align="left">\x</td>
+    <td align="left">Michael is a graduate of Sussex University (MA, economics, 1983) and the University of California at Los Angeles (MBA, marketing, 1986).  He has also taken the courses Multi-Cultural Selling and Time Management for the Sales Professional.  He is fluent in Japanese and can read and write French, Portuguese, and Spanish.</td>
+    <td align="right">5</td>
+    <td align="left">http://accweb/emmployees/davolio.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">7</td>
+    <td align="left">King</td>
+    <td align="left">Robert</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Mr.</td>
+    <td align="left">1960-05-29</td>
+    <td align="left">1994-01-02</td>
+    <td align="left">Edgeham Hollow\nWinchester Way</td>
+    <td align="left">London</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">RG1 9SP</td>
+    <td align="left">UK</td>
+    <td align="left">(71) 555-5598</td>
+    <td align="left">465</td>
+    <td align="left">\x</td>
+    <td align="left">Robert King served in the Peace Corps and traveled extensively before completing his degree in English at the University of Michigan in 1992, the year he joined the company.  After completing a course entitled Selling in Europe, he was transferred to the London office in March 1993.</td>
+    <td align="right">5</td>
+    <td align="left">http://accweb/emmployees/davolio.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">8</td>
+    <td align="left">Callahan</td>
+    <td align="left">Laura</td>
+    <td align="left">Inside Sales Coordinator</td>
+    <td align="left">Ms.</td>
+    <td align="left">1958-01-09</td>
+    <td align="left">1994-03-05</td>
+    <td align="left">4726 - 11th Ave. N.E.</td>
+    <td align="left">Seattle</td>
+    <td align="left">WA</td>
+    <td align="left">98105</td>
+    <td align="left">USA</td>
+    <td align="left">(206) 555-1189</td>
+    <td align="left">2344</td>
+    <td align="left">\x</td>
+    <td align="left">Laura received a BA in psychology from the University of Washington.  She has also completed a course in business French.  She reads and writes French.</td>
+    <td align="right">2</td>
+    <td align="left">http://accweb/emmployees/davolio.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">9</td>
+    <td align="left">Dodsworth</td>
+    <td align="left">Anne</td>
+    <td align="left">Sales Representative</td>
+    <td align="left">Ms.</td>
+    <td align="left">1966-01-27</td>
+    <td align="left">1994-11-15</td>
+    <td align="left">7 Houndstooth Rd.</td>
+    <td align="left">London</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">WG2 7LT</td>
+    <td align="left">UK</td>
+    <td align="left">(71) 555-4444</td>
+    <td align="left">452</td>
+    <td align="left">\x</td>
+    <td align="left">Anne has a BA degree in English from St. Lawrence College.  She is fluent in French and German.</td>
+    <td align="right">5</td>
+    <td align="left">http://accweb/emmployees/davolio.bmp</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">10</td>
+    <td align="left">Shukla</td>
+    <td align="left">Aayush</td>
+    <td align="left">Trainer</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">1991-01-01</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">Delhi</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">USA</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+</table>
+<p>(10 rows)<br />
+</p>
+
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=#
+northwind=# \i
